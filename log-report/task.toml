@@ -1,4 +1,4 @@
-artifacts = "/app/out.json"
+artifacts = ["/app/report.json"]
 
 [task]
 name = "dynamo/log-report"
