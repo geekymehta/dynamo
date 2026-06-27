@@ -1,49 +1,33 @@
-2 · Write the proposal
-Before you build anything, you write a short proposal describing the task you want to create. An automated reviewer reads it and returns passed or failed with specific feedback. You revise and resubmit until it passes — then you scaffold the repo. The proposal is a cheap gate: it catches ideas that are too easy, un-gradable, or impossible before you spend hours on a solution and tests.
+# Project Dynamo: Proposal Writing Guide
 
-A proposal is judged on the idea, not on polished prose. There is no solution or test code yet — don't write any. Three things must be in it.
+Before you build a task, you must submit a short proposal describing your idea. An automated reviewer will return specific feedback (Pass/Fail). You must revise and resubmit until it passes before scaffolding the repository. 
 
-The four things every proposal must include
-The difficulty — what the task is and why it's genuinely hard for an expert. Name the specific reasoning, domain knowledge, or multi-step problem-solving involved; who in the real world does this work; and where any data comes from (synthetic or real, and whether it's realistically challenging). Not "this is hard."
-The intended approach — a high-level strategy and the key insight for how it would be solved. Enough that another expert sees how they'd do it. This proves you actually hold a solution, not just a hope that one exists. Include a best-case expert-time estimate (focused hours for a senior practitioner who already knows the approach).
-How it will be verified — what output the agent must produce and how a program would deterministically check it's correct. If you'll accept a range or tolerance instead of an exact answer, say what the band brackets and why it admits valid variation but rejects wrong methods.
-Category & sub-category justification — a brief justification for why this task belongs to the category and sub-category you chose. Ground it in the task's actual reasoning and domain, not generic labels.
-Do not edit Category or Sub-category
-The Category and Sub-category input fields are pre-filled and must not be edited. Leave them exactly as they appear — your justification in answer 4 is where you explain the fit.
+A proposal is judged on the idea, not on polished prose. Do not include solution or test code.
 
-Answering these four questions now means you've de-risked the task before building it — they're the same questions you'll need to satisfy when you write task.toml and the verifier.
+## The Four Requirements
+Every proposal must comprehensively answer the following four questions:
 
-Pass the platform-gated check before moving on
-Don't start scaffolding, writing tests, or building a solution until your proposal clears the platform's automated review. Submit, then read the comments on the right — they show pass/fail per criterion and actionable feedback on exactly what to fix. Revise and resubmit until it passes. Every hour spent building on top of a proposal that hasn't passed is an hour you may have to throw away.
+1. **The Difficulty:** What the task is and why it's genuinely hard for an expert. Name the specific reasoning, domain knowledge, or multi-step problem-solving involved. Detail who in the real world does this work, where the data comes from (synthetic vs real), and how it reflects realistic complexity. Avoid vague statements like "this is hard."
+2. **The Intended Approach:** A high-level strategy and the key insight required to solve it. Provide enough detail that another expert immediately understands the path to victory. Include a best-case expert-time estimate (focused hours for a senior practitioner who already knows the approach).
+3. **How it will be Verified:** What exact output the agent must produce and how a program will deterministically check it. If you accept a range/tolerance instead of an exact answer, state exactly what the band brackets and justify why it admits valid variations while rejecting flawed methods.
+4. **Category & Sub-category Justification:** A brief justification for why this task fits the chosen category/subcategory. Ground it in the task's actual reasoning and domain. *Note: Do not edit the pre-filled Category/Sub-category input fields in the template; put your justification in the final answer box.*
 
-What makes a proposal pass
-The reviewer holds your idea to a high bar. A strong proposal clears all of these:
+## Why Proposals Fail
+The automated reviewer holds ideas to a very high bar. The most common rejection reasons are:
+* Difficulty stated vaguely ("requires expertise").
+* Claiming a solution exists without actually conveying the key insight/strategy.
+* Tolerances or numeric ranges provided without mathematical/domain justification.
+* Missing expert-time estimate.
+* The task is a standard textbook problem or a "named gotcha" with a well-known solution.
+* Grading that mandates *how* the agent solves it, rather than inspecting the final result.
 
-Work through each item.
+## Worked Example — A Passing Proposal
+**Task:** Implement a concurrent C++ larger-than-memory key-value store that beats Microsoft FASTER on the YCSB-A benchmark, in one shot, inside a 4-CPU / 2 GB container.
 
-Checklist
-0 of 6 complete
+**1. Difficulty:** The ~3 GB dataset exceeds the 2 GB container, so a naive approach thrashes or runs out of memory — a real larger-than-memory architecture (compact in-memory index + on-disk value log) is mandatory just to load. Beating a 7-year-optimized production system is genuine storage-systems R&D, the day-job of engineers who build databases and caches.
 
+**2. Approach (Key Insight):** Specialization beats generality. Exploit the fixed, known workload — fixed-size values, integer keys, a small hot key-set, fixed core count — to shed the overhead FASTER pays for being general-purpose (variable-length records, full recovery, general garbage collection). A senior systems engineer who holds this design could implement it in ~2–3 focused days.
 
-Hard for a competent domain expert — not solvable by an average undergrad in a few days, and not just tedious or high-volume.
+**3. Verification:** Deterministic gates — correctness/anti-cheat tests, proof that values are actually on disk, and a throughput comparison run in the same harness as FASTER (median of 5 runs, run-phase only, identical traces). The pass bar allows a small margin to absorb measured run-to-run jitter while still rejecting a genuinely slower solution.
 
-Requires real multi-step terminal work — exploration, running code, debugging, iterating. Not solvable on paper or in one shot.
-
-Not a textbook or well-known problem a model could reproduce from memory.
-
-A solution plausibly exists and is bounded — you can sketch the approach, not just assert it's possible.
-
-Deterministically checkable, and the answer can't be looked up online, shortcut, or hardcoded.
-
-Graded on the result (what is produced), never on the method. No mandated tools or step-by-step procedure.
-Why proposals fail
-The most common rejections: difficulty stated vaguely ("requires expertise"); an approach that only claims a solution exists without conveying the key insight; tolerances/ranges with no justification; no expert-time estimate; a task that's actually solvable by reasoning alone; a standard problem with a well-known solution; or grading that depends on how the agent solves it. Each is fixable by editing the proposal — the reviewer's feedback tells you exactly what to add.
-
-Worked example — a proposal that passes
-Task: Implement a concurrent C++ larger-than-memory key-value store that beats Microsoft FASTER on the YCSB-A benchmark, in one shot, inside a 4-CPU / 2 GB container.
-
-Difficulty: The ~3 GB dataset exceeds the 2 GB container, so a naive approach thrashes or runs out of memory — a real larger-than-memory architecture (compact in-memory index + on-disk value log) is mandatory just to load. Beating a 7-year-optimized production system is genuine storage-systems R&D, the day-job of engineers who build databases and caches.
-
-Approach (key insight): Specialization beats generality. Exploit the fixed, known workload — fixed-size values, integer keys, a small hot key-set, fixed core count — to shed the overhead FASTER pays for being general-purpose (variable-length records, full recovery, general garbage collection). A senior systems engineer who holds this design could implement it in ~2–3 focused days.
-
-Verification: Deterministic gates — correctness/anti-cheat tests, proof that values are actually on disk, and a throughput comparison run in the same harness as FASTER (median of 5 runs, run-phase only, identical traces). The pass bar allows a small margin to absorb measured run-to-run jitter while still rejecting a genuinely slower solution.
+**4. Category Justification:** Belongs in `software_engineering` / `systems_programming` because it relies heavily on native memory management, POSIX disk I/O, and concurrent data structures.
